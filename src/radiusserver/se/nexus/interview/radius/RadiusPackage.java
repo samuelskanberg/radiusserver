@@ -1,5 +1,6 @@
 package radiusserver.se.nexus.interview.radius;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class RadiusPackage {
@@ -14,7 +15,7 @@ public class RadiusPackage {
 		this.identifier = buffer[1];
 		
 		// The short spans over two bytes
-		this.length = buffer[2];
-		this.length |= buffer[3];
+		ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
+		this.length = byteBuffer.getShort(2);
 	}
 }

@@ -25,6 +25,11 @@ public class Main {
 				serverSocket.receive(packet);
 				System.out.println("Received packet!");
 				System.out.println("First byte: "+buffer[0]);
+				
+				RadiusPackage radiusPackage = new RadiusPackage(buffer, buffer.length);
+				System.out.println("Code: "+radiusPackage.code);
+				System.out.println("identifier: "+radiusPackage.identifier);
+				System.out.println("Length: "+radiusPackage.length);
 			}
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
