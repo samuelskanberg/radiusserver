@@ -23,13 +23,17 @@ public class Main {
 			
 			while (true) {
 				serverSocket.receive(packet);
-				System.out.println("Received packet!");
-				System.out.println("First byte: "+buffer[0]);
+				System.out.println("Received packet! Length: "+packet.getLength());
+				
+				for (int i = 0; i < packet.getLength(); i++) {
+					System.out.println("["+i+"] = "+buffer[i]);
+				}
 				
 				RadiusPackage radiusPackage = new RadiusPackage(buffer, buffer.length);
 				System.out.println("Code: "+radiusPackage.code);
 				System.out.println("identifier: "+radiusPackage.identifier);
 				System.out.println("Length: "+radiusPackage.length);
+				System.out.println("Authenticator: "+radiusPackage.authenticator.toString());
 			}
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
