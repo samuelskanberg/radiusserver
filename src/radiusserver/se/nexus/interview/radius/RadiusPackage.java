@@ -8,9 +8,9 @@ public class RadiusPackage {
 	byte identifier;
 	short length;
 	Authenticator authenticator;
-	ArrayList<Attribute> attributes;
+	ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 	
-	public RadiusPackage(byte buffer[], int length) {
+	public RadiusPackage(byte buffer[], int length) throws SilentlyIgnoreException, Exception {
 		this.code = buffer[0];
 		this.identifier = buffer[1];
 		
@@ -34,9 +34,38 @@ public class RadiusPackage {
 			break;
 		default:
 			// TODO: Not respond at all?
-			break;
+			throw new SilentlyIgnoreException("Unknown code");
 		}
 		
+		// If the packet is shorter than the Length field indicates, it MUST be silently discarded.
+		if (length < this.length) {
+			throw new SilentlyIgnoreException("Packet is shorter than indicated");
+		}
+		
+		// After 20 bytes, everything is attributes
+		int i = 20;
+		while (i < this.length) {
+			byte attributeType = buffer[i];
+			byte attributeLength = buffer[i+1];
+			if (i + attributeLength > this.length) {
+				// Should or must send an Access-Reject due to bad length
+				// TODO: Send Access-Reject
+				throw new Exception("Bad attribute length");
+			}
+			
+			byte attributeValue[] = new byte[attributeLength-2];
+			
+			for (int j = 0; j < attributeLength-2; j++) {
+				attributeValue[j] = buffer[i+2+j];
+			}
+			
+			// Set the index to next attribute
+			i = i+attributeLength;
+			
+			Attribute attribute = new Attribute(attributeType, attributeLength, new String(attributeValue));
+		
+			this.attributes.add(attribute);
+		}
 		
 	}
 	
