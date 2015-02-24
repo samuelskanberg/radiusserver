@@ -110,8 +110,7 @@ public class TestRadiusPackage {
 			radiusPackage.addAttribute(userNameAttribute);
 			
 			radiusPackage.calculateLength();
-
-			String password = radiusPackage.getPassword();
+;
 			
 		} catch (SilentlyIgnoreException e) {
 			// TODO Auto-generated catch block

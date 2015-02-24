@@ -17,9 +17,10 @@ public class RadiusResponsePackage extends RadiusPackage {
 				String userName = radiusPackage.getUserName();
 				
 				System.out.println("Username: "+userName);
-				String password = radiusPackage.getPassword();
+				String password = Model.getModel().getPassword(userName);
+				boolean correctPassword = radiusPackage.hasCorrectPassword(password);
 				
-				System.out.println("Password: "+password);
+				System.out.println("Password correct: "+correctPassword);
 			} catch (UserNameNotFound e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

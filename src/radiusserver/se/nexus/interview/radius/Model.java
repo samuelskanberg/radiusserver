@@ -15,8 +15,12 @@ public class Model {
 		// "frans2"/"fran123!""
 		
 		// Should maybe be stored in md5sum format
-		userNameAndPasswords.put("frans1", "frans123!");
-		userNameAndPasswords.put("frans2", "frans123!\"");
+		userNameAndPasswords.put("frans1", "fran123!");
+		userNameAndPasswords.put("frans2", "fran123!\"");
+	}
+	
+	public String getPassword(String userName) {
+		return userNameAndPasswords.get(userName);
 	}
 	
 	// Singleton access to the model
