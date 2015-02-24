@@ -3,6 +3,8 @@ package radiusserver.se.nexus.interview.radius;
 import java.io.*;
 import java.net.*;
 
+import radiusserver.se.nexus.interview.radius.RadiusPackage.Code;
+
 public class Main {
 
 	static int defaultServerPort = 1812;
@@ -42,6 +44,10 @@ public class Main {
 						System.out.println("Attribute length: "+attribute.length);
 						System.out.println("Attribute value: "+attribute.toString());
 					}
+					
+					// If not exceptions have been thrown here, the package is good, at least in format
+					RadiusResponsePackage responsePackage = new RadiusResponsePackage(radiusPackage);
+					
 				} catch (SilentlyIgnoreException e) {
 					System.out.println("Ignoring package: "+e.getMessage());
 				} catch (Exception e) {

@@ -2,17 +2,21 @@ package radiusserver.se.nexus.interview.radius;
 
 public class UserPasswordAttribute extends Attribute {
 
-	public UserPasswordAttribute(byte type, byte length, String stringField) {
-		super(type, length, stringField);
+	public UserPasswordAttribute(byte type, byte length, byte[] data) {
+		super(type, length, data);
 	}
 	
 	public String toString() {
-		char chars[] = this.stringField.toCharArray();
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < chars.length; i++) {
-			builder.append((byte)chars[i]+",");
+		for (int i = 0; i < this.data.length; i++) {
+			builder.append(this.data[i]+",");
 		}
 		return builder.toString();
+	}
+
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

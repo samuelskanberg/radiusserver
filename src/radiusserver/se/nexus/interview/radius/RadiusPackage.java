@@ -1,6 +1,10 @@
 package radiusserver.se.nexus.interview.radius;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class RadiusPackage {
@@ -9,6 +13,10 @@ public class RadiusPackage {
 	short length;
 	Authenticator authenticator;
 	ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+	
+	public RadiusPackage() {
+		
+	}
 	
 	public RadiusPackage(byte buffer[], int length) throws SilentlyIgnoreException, Exception {
 		this.code = buffer[0];
@@ -55,7 +63,7 @@ public class RadiusPackage {
 			// Set the index to next attribute
 			i = i+attributeLength;
 			
-			Attribute attribute = Attribute.getAttributeFromFactory(attributeType, attributeLength, new String(attributeValue));
+			Attribute attribute = Attribute.getAttributeFromFactory(attributeType, attributeLength, attributeValue);
 		
 			this.attributes.add(attribute);
 		}
@@ -71,5 +79,121 @@ public class RadiusPackage {
 		public static final byte AccessChallenge = 11;
 		public static final byte StatusServer = 12;
 		public static final byte StatusClient = 13;
+	}
+
+	public String getUserName() throws UserNameNotFound {
+		for (Attribute attribute : this.attributes) {
+			if (attribute instanceof UserNameAttribute) {
+				return attribute.toString();
+			}
+		}
+		
+		throw new UserNameNotFound();
+	}
+
+	public String getPassword() throws UserPasswordNotFound {
+		for (Attribute attribute : this.attributes) {
+			if (attribute instanceof UserPasswordAttribute) {
+				// Reverse the process 
+				try {
+					MessageDigest digest = MessageDigest.getInstance("MD5");
+					
+					String password = "frans123!";
+					byte passwordBytes[] = password.getBytes();
+					byte paddedPasswordBytes[] = new byte[16];
+					System.arraycopy(passwordBytes, 0, paddedPasswordBytes, 0, passwordBytes.length);
+					System.out.print("Password bytes: ");
+					for (byte b : passwordBytes) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					System.out.print("Padded password bytes: ");
+					for (byte b : paddedPasswordBytes) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					byte RA[] = this.authenticator.data;
+					
+					String secret = "1";
+					byte secretBytes[] = secret.getBytes();
+					
+					byte secretAndRA[] = new byte[secretBytes.length+RA.length];
+					System.arraycopy(secretBytes, 0, secretAndRA, 0, secretBytes.length);
+					System.arraycopy(RA, 0, secretAndRA, secretBytes.length, RA.length);
+					
+					System.out.print("Secret bytes: ");
+					for (byte b : secretBytes) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					System.out.print("RA: ");
+					for (byte b : RA) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					System.out.print("SecretAndRA: ");
+					for (byte b : secretAndRA) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					byte md5OnSecretAndRA[] = digest.digest(secretAndRA);
+					System.out.print("MD5 on secretAndRA: ");
+					for (byte b : md5OnSecretAndRA) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					byte c1[] = new byte[16];
+					for (int i = 0; i < 16; i++) {
+						c1[i] = (byte)(md5OnSecretAndRA[i] ^ paddedPasswordBytes[i]);
+					}
+					
+					System.out.print("c1: ");
+					for (byte b : c1) {
+						System.out.print(b+", ");
+					}
+					System.out.println("");
+					
+					
+					return ((UserPasswordAttribute)attribute).getPassword();
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} /*catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+			}
+		}
+		
+		throw new UserPasswordNotFound();
+	}
+
+	public void setCode(byte code) {
+		this.code = code;
+	}
+
+	public void calculateLength() {
+		// code, identifier and authenticator is 20 octets
+		int length = 20;
+		for (Attribute attribute : this.attributes) {
+			length += 2;
+			length += attribute.data.length;
+		}
+		
+		this.length = (byte)length;
+	}
+
+	public void setAuthenticator(byte[] data) throws SilentlyIgnoreException {
+		authenticator = Authenticator.getAuthenticatorFromFactory(this.code, data);
+	}
+
+	public void addAttribute(Attribute attribute) {
+		this.attributes.add(attribute);
 	}
 }

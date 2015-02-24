@@ -3,27 +3,27 @@ package radiusserver.se.nexus.interview.radius;
 public class Attribute {
 	byte type;
 	byte length;
-	String stringField;
+	byte[] data;
 	
-	public Attribute(byte type, byte length, String stringField) {
-		this.type = type;
-		this.length = length;
-		this.stringField = stringField;
+	public Attribute() {
+		
 	}
 	
-	public static Attribute getAttributeFromFactory(byte type, byte length, String stringField) throws NotImplemented {
+	public Attribute(byte type, byte length, byte[] data) {
+		this.type = type;
+		this.length = length;
+		this.data = data;
+	}
+	
+	public static Attribute getAttributeFromFactory(byte type, byte length, byte[] data) throws NotImplemented {
 		switch (type) {
 		case Type.UserName:
-			return new UserNameAttribute(type, length, stringField);
+			return new UserNameAttribute(type, length, data);
 		case Type.UserPassword:
-			return new UserPasswordAttribute(type, length, stringField);
+			return new UserPasswordAttribute(type, length, data);
 		default:
 			throw new NotImplemented("Type not implemented: "+type);
 		}
-	}
-	
-	public String toString() {
-		return this.stringField;
 	}
 	
 	public static class Type {
