@@ -40,7 +40,7 @@ public class Main {
 					for (Attribute attribute : radiusPackage.attributes) {
 						System.out.println("Attribute type: "+attribute.type);
 						System.out.println("Attribute length: "+attribute.length);
-						System.out.println("Attribute value: "+attribute.stringField);
+						System.out.println("Attribute value: "+attribute.toString());
 					}
 				} catch (SilentlyIgnoreException e) {
 					System.out.println("Ignoring package: "+e.getMessage());

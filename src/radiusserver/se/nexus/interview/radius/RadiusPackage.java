@@ -23,19 +23,7 @@ public class RadiusPackage {
 			authenticatorBuf[i] = buffer[4+i];
 		}
 		
-		switch (this.code) {
-		case Code.AccessRequest:
-			authenticator = new RequestAuthenticator(authenticatorBuf);
-			break;
-		case Code.AccessAccept:
-		case Code.AccessReject:
-		case Code.AccessChallenge:
-			authenticator = new ResponseAuthenticator(authenticatorBuf);
-			break;
-		default:
-			// TODO: Not respond at all?
-			throw new SilentlyIgnoreException("Unknown code");
-		}
+		authenticator = Authenticator.getAuthenticatorFromFactory(this.code, authenticatorBuf);
 		
 		// If the packet is shorter than the Length field indicates, it MUST be silently discarded.
 		if (length < this.length) {
@@ -53,6 +41,11 @@ public class RadiusPackage {
 				throw new Exception("Bad attribute length");
 			}
 			
+			// Will also make sure that the while loop won't be eternal
+			if (attributeLength < 2) {
+				throw new Exception("Bad attribute length, too small");
+			}
+			
 			byte attributeValue[] = new byte[attributeLength-2];
 			
 			for (int j = 0; j < attributeLength-2; j++) {
@@ -62,7 +55,7 @@ public class RadiusPackage {
 			// Set the index to next attribute
 			i = i+attributeLength;
 			
-			Attribute attribute = new Attribute(attributeType, attributeLength, new String(attributeValue));
+			Attribute attribute = Attribute.getAttributeFromFactory(attributeType, attributeLength, new String(attributeValue));
 		
 			this.attributes.add(attribute);
 		}
