@@ -26,6 +26,14 @@ public class Attribute {
 		}
 	}
 	
+	public byte[] toByteArray() {
+		byte[] data = new byte[2+this.data.length];
+		data[0] = this.type;
+		data[1] = this.length;
+		System.arraycopy(this.data, 0, data, 2, this.data.length);
+		return data;
+	}
+	
 	public static class Type {
 		public static final byte UserName = 1;
 		public static final byte UserPassword = 2;

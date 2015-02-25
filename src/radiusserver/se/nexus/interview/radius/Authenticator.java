@@ -5,6 +5,10 @@ import radiusserver.se.nexus.interview.radius.RadiusPackage.Code;
 public class Authenticator {
 	byte data[] = new byte[16];
 	
+	public Authenticator() {
+		
+	}
+	
 	public Authenticator(byte[] authenticatorBuf) {
 		this.data = authenticatorBuf;
 	}

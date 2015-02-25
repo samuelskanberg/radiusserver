@@ -98,7 +98,7 @@ public class RadiusPackage {
 				// Reverse the process 
 				//String password = "frans123!";
 				byte RA[] = this.authenticator.data;
-				String secret = "1";
+				String secret = Model.getModel().getSecret();
 				
 				byte generatedPassword[] = encryptPassword(password, RA, secret);
 				
@@ -212,5 +212,37 @@ public class RadiusPackage {
 
 	public void addAttribute(Attribute attribute) {
 		this.attributes.add(attribute);
+	}
+	
+	public byte[] toByteArray() {
+		// Code, identifier, length and authenticator
+		int length = 20;
+		
+		// Loop through attributes
+		for (Attribute attribute : this.attributes) {
+			byte attributeBytes[] = attribute.toByteArray();
+			length += attributeBytes.length;
+		}
+		
+		byte data[] = new byte[length];
+		
+		data[0] = this.code;
+		data[1] = this.identifier;
+		// Most significant octet first
+		data[2] = (byte)(this.length & 0xFF00);
+		data[3] = (byte)(this.length & 0x00FF);
+		
+		// Copy authenticator data
+		System.arraycopy(this.authenticator.data, 0, data, 4, this.authenticator.data.length);
+		
+		int i = 20;
+		// Copy all attributes
+		for (Attribute attribute : this.attributes) {
+			byte attributeBytes[] = attribute.toByteArray();
+			System.arraycopy(attributeBytes, 0, data, i, attributeBytes.length);
+			i+= attributeBytes.length;
+		}
+		
+		return data;
 	}
 }

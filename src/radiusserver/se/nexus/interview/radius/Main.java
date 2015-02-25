@@ -8,11 +8,13 @@ import radiusserver.se.nexus.interview.radius.RadiusPackage.Code;
 public class Main {
 
 	static int defaultServerPort = 1812;
+	static String defaultSecret = "1";
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int serverPort = defaultServerPort;
+		Model.getModel().setSecret(defaultSecret);
 		
 		// TODO: Parse command line arguments
 		try {
@@ -28,6 +30,7 @@ public class Main {
 				try {
 					serverSocket.receive(packet);
 					System.out.println("Received packet! Length: "+packet.getLength());
+					System.out.println("----------------------------");
 
 					for (int i = 0; i < packet.getLength(); i++) {
 						System.out.println("["+i+"] = "+buffer[i]);
@@ -47,6 +50,19 @@ public class Main {
 					
 					// If not exceptions have been thrown here, the package is good, at least in format
 					RadiusResponsePackage responsePackage = new RadiusResponsePackage(radiusPackage);
+					responsePackage.calculateLength();
+					
+					// Respond
+					int sendingPort = packet.getPort();
+					InetAddress sendingAddress = packet.getAddress();
+					
+					byte []responsePackageData = responsePackage.toByteArray();
+					DatagramPacket response = new DatagramPacket(responsePackageData, responsePackageData.length, sendingAddress, sendingPort);
+					
+					System.out.println("Responding to "+sendingAddress.getHostAddress()+":"+sendingPort+" as response to id: "+radiusPackage.identifier);
+					System.out.println("-------------------------");
+					
+					serverSocket.send(response);
 					
 				} catch (SilentlyIgnoreException e) {
 					System.out.println("Ignoring package: "+e.getMessage());

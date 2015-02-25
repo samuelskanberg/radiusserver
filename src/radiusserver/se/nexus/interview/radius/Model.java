@@ -6,6 +6,7 @@ public class Model {
 	private static Model model;
 	
 	private HashMap<String, String> userNameAndPasswords;
+	private String secret;
 	
 	private Model() {
 		userNameAndPasswords = new HashMap<String, String>();
@@ -29,5 +30,13 @@ public class Model {
 			Model.model = new Model();
 		}
 		return Model.model;
+	}
+	
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+
+	public String getSecret() {
+		return this.secret;
 	}
 }
