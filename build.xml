@@ -1,0 +1,28 @@
+<project>
+
+    <property name="version.num" value="0.0.1"/>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes"/>
+    </target>
+
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/radiusserver-${version.num}.jar" basedir="build/classes">
+        <manifest>
+            <attribute name="Main-Class" value="radiusserver.se.nexus.interview.radius.Main"/>
+        </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="build/jar/radiusserver-${version.num}.jar" fork="true"/>
+    </target>
+
+</project>
