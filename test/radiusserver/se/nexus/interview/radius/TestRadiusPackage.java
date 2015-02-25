@@ -43,7 +43,7 @@ public class TestRadiusPackage {
 		
 		RadiusPackage radiusPackage;
 		try {
-			radiusPackage = new RadiusPackage(buffer, 200);
+			radiusPackage = new RadiusPackage(buffer, 300);
 			assertEquals(1, radiusPackage.code);
 			assertEquals(123, radiusPackage.identifier);
 			assertEquals(255, radiusPackage.length);
@@ -110,8 +110,6 @@ public class TestRadiusPackage {
 			radiusPackage.addAttribute(userNameAttribute);
 			
 			radiusPackage.calculateLength();
-;
-			
 		} catch (SilentlyIgnoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -15,4 +15,8 @@ public class UserNameAttribute extends Attribute {
 	public String toString() {
 		return new String(data);
 	}
+	
+	public String getType() {
+		return "UserName";
+	}
 }

@@ -51,6 +51,9 @@ public class RadiusResponsePackage extends RadiusPackage {
 				this.code = Code.AccessReject;
 				calculateLength();
 				this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, this.length, radiusPackage.authenticator, this.attributes, Model.getModel().getSecret());
+			} catch (NotImplemented e) {
+				System.out.println("Not yet implemented: "+e.getMessage());
+				e.printStackTrace();
 			}
 			
 			break;

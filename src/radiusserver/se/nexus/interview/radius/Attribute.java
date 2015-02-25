@@ -80,4 +80,8 @@ public class Attribute {
 		public static final byte PortLimit = 62;
 		public static final byte LoginLATPort = 63;
 	}
+
+	public String getType() {
+		return "Type "+this.type;
+	}
 }

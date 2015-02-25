@@ -92,7 +92,7 @@ public class RadiusPackage {
 		throw new UserNameNotFound();
 	}
 
-	public boolean hasCorrectPassword(String password) throws UserPasswordNotFound {
+	public boolean hasCorrectPassword(String password) throws UserPasswordNotFound, NotImplemented {
 		for (Attribute attribute : this.attributes) {
 			if (attribute instanceof UserPasswordAttribute) {
 				// Reverse the process 
@@ -101,16 +101,8 @@ public class RadiusPackage {
 				String secret = Model.getModel().getSecret();
 				
 				byte generatedPassword[] = encryptPassword(password, RA, secret);
-				
-				System.out.print("Encrypted password: ");
-				for (byte b : generatedPassword) {
-					System.out.print(b+", ");
-				}
-				System.out.println("");
-				
+								
 				// Compare password attribute with generated password
-				System.out.println("Attribute data.length: "+attribute.data.length);
-				System.out.println("Generated password.length: "+generatedPassword.length);
 				return Arrays.equals(attribute.data, generatedPassword);
 			}
 		}
@@ -118,76 +110,36 @@ public class RadiusPackage {
 		throw new UserPasswordNotFound();
 	}
 	
-	public byte[] encryptPassword(String password, byte[] RA, String secret) {
+	public byte[] encryptPassword(String password, byte[] RA, String secret) throws NotImplemented {
+		if (password.getBytes().length > 16) {
+			throw new NotImplemented("Longer password not yet implemented");
+		}
+		
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
 			
 			byte passwordBytes[] = password.getBytes();
 			byte paddedPasswordBytes[] = new byte[16];
 			System.arraycopy(passwordBytes, 0, paddedPasswordBytes, 0, passwordBytes.length);
-			System.out.print("Password bytes: ");
-			for (byte b : passwordBytes) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
 			
-			System.out.print("Padded password bytes: ");
-			for (byte b : paddedPasswordBytes) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
-			
-
 			byte secretBytes[] = secret.getBytes();
 			
 			byte secretAndRA[] = new byte[secretBytes.length+RA.length];
 			System.arraycopy(secretBytes, 0, secretAndRA, 0, secretBytes.length);
 			System.arraycopy(RA, 0, secretAndRA, secretBytes.length, RA.length);
 			
-			System.out.print("Secret bytes: ");
-			for (byte b : secretBytes) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
-			
-			System.out.print("RA: ");
-			for (byte b : RA) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
-			
-			System.out.print("SecretAndRA: ");
-			for (byte b : secretAndRA) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
-			
 			byte md5OnSecretAndRA[] = digest.digest(secretAndRA);
-			System.out.print("MD5 on secretAndRA: ");
-			for (byte b : md5OnSecretAndRA) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
 			
 			byte c1[] = new byte[16];
 			for (int i = 0; i < 16; i++) {
 				c1[i] = (byte)(md5OnSecretAndRA[i] ^ paddedPasswordBytes[i]);
 			}
 			
-			System.out.print("c1: ");
-			for (byte b : c1) {
-				System.out.print(b+", ");
-			}
-			System.out.println("");
-			
 			return c1;
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} /*catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		} 
 		return null;
 	}
 

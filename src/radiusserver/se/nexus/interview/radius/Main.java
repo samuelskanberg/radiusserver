@@ -50,10 +50,6 @@ public class Main {
 					System.out.println("Received packet! Length: "+packet.getLength());
 					System.out.println("----------------------------");
 
-					for (int i = 0; i < packet.getLength(); i++) {
-						System.out.println("["+i+"] = "+buffer[i]);
-					}
-
 					RadiusPackage radiusPackage = new RadiusPackage(buffer, packet.getLength());
 					System.out.println("Code: "+radiusPackage.code);
 					System.out.println("identifier: "+radiusPackage.identifier);
@@ -61,7 +57,7 @@ public class Main {
 					System.out.println("Authenticator: "+radiusPackage.authenticator.toString());
 					System.out.println("Attribute list");
 					for (Attribute attribute : radiusPackage.attributes) {
-						System.out.println("Attribute type: "+attribute.type);
+						System.out.println("Attribute type: "+attribute.getType());
 						System.out.println("Attribute length: "+attribute.length);
 						System.out.println("Attribute value: "+attribute.toString());
 					}

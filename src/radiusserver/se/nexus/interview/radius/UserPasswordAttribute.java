@@ -18,5 +18,9 @@ public class UserPasswordAttribute extends Attribute {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String getType() {
+		return "UserPassword";
+	}
 
 }
