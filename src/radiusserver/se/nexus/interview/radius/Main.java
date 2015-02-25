@@ -50,7 +50,6 @@ public class Main {
 					
 					// If not exceptions have been thrown here, the package is good, at least in format
 					RadiusResponsePackage responsePackage = new RadiusResponsePackage(radiusPackage);
-					responsePackage.calculateLength();
 					
 					// Respond
 					int sendingPort = packet.getPort();

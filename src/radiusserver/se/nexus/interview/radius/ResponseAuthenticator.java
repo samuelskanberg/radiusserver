@@ -10,7 +10,7 @@ public class ResponseAuthenticator extends Authenticator {
 		super(authenticatorBuf);
 	}
 
-	public ResponseAuthenticator(byte code, byte identifier,
+	public ResponseAuthenticator(byte code, byte identifier, short length,
 			Authenticator authenticator, ArrayList<Attribute> attributes,
 			String secret) {
 		int totalAttributesLength = 0;
@@ -18,12 +18,17 @@ public class ResponseAuthenticator extends Authenticator {
 			totalAttributesLength += attribute.toByteArray().length;
 		}
 		byte secretBytes[] = secret.getBytes();
-		byte []concatinatedFields = new byte[1+1+16+totalAttributesLength+secretBytes.length];
+		
+		byte []concatinatedFields = new byte[1+1+2+16+totalAttributesLength+secretBytes.length];
 		concatinatedFields[0] = code;
 		concatinatedFields[1] = identifier;
-		System.arraycopy(authenticator.data, 0, concatinatedFields, 2, 16);
+		// Most significant octet first
+		concatinatedFields[2] = (byte)(length & 0xFF00);
+		concatinatedFields[3] = (byte)(length & 0x00FF);
 		
-		int i = 18;
+		System.arraycopy(authenticator.data, 0, concatinatedFields, 4, 16);
+		
+		int i = 20;
 		for (Attribute attribute : attributes) {
 			byte attributeBytes[] = attribute.toByteArray();
 			System.arraycopy(attributeBytes, 0, concatinatedFields, i, attributeBytes.length);

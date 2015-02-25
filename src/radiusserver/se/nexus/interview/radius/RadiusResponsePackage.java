@@ -30,14 +30,16 @@ public class RadiusResponsePackage extends RadiusPackage {
 				
 				System.out.println("Password correct: "+correctPassword);
 				
+				// We won't add any attributes so the size is the minimum
+				calculateLength();
+				
 				if (correctPassword) {
 					this.code = Code.AccessAccept;
-					this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, radiusPackage.authenticator, radiusPackage.attributes, Model.getModel().getSecret());
 				} else {
 					this.code = Code.AccessReject;
-					this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, radiusPackage.authenticator, radiusPackage.attributes, Model.getModel().getSecret());
 				}
 				
+				this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, this.length, radiusPackage.authenticator, this.attributes, Model.getModel().getSecret());
 				
 			} catch (UserNameNotFound e) {
 				// TODO Auto-generated catch block

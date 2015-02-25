@@ -17,7 +17,7 @@ public class Model {
 		
 		// Should maybe be stored in md5sum format
 		userNameAndPasswords.put("frans1", "fran123!");
-		userNameAndPasswords.put("frans2", "fran123!\"");
+		userNameAndPasswords.put("frans2", "fran123!");
 	}
 	
 	public String getPassword(String userName) {
