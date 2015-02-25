@@ -19,7 +19,7 @@ public class RadiusPackage {
 		
 	}
 	
-	public RadiusPackage(byte buffer[], int length) throws SilentlyIgnoreException, Exception {
+	public RadiusPackage(byte buffer[], int length) throws SilentlyIgnoreException, NotImplemented, Exception {
 		this.code = buffer[0];
 		this.identifier = buffer[1];
 		

@@ -42,11 +42,15 @@ public class RadiusResponsePackage extends RadiusPackage {
 				this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, this.length, radiusPackage.authenticator, this.attributes, Model.getModel().getSecret());
 				
 			} catch (UserNameNotFound e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Username not found!");
+				this.code = Code.AccessReject;
+				calculateLength();
+				this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, this.length, radiusPackage.authenticator, this.attributes, Model.getModel().getSecret());
 			} catch (UserPasswordNotFound e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Userpassword is not found!");
+				this.code = Code.AccessReject;
+				calculateLength();
+				this.authenticator = new ResponseAuthenticator(this.code, radiusPackage.identifier, this.length, radiusPackage.authenticator, this.attributes, Model.getModel().getSecret());
 			}
 			
 			break;

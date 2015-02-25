@@ -20,8 +20,13 @@ public class Model {
 		userNameAndPasswords.put("frans2", "fran123!");
 	}
 	
-	public String getPassword(String userName) {
-		return userNameAndPasswords.get(userName);
+	public String getPassword(String userName) throws UserNameNotFound {
+		String password = userNameAndPasswords.get(userName);
+		if (password == null) {
+			throw new UserNameNotFound();
+		} else {
+			return password;
+		}
 	}
 	
 	// Singleton access to the model

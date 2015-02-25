@@ -16,7 +16,25 @@ public class Main {
 		int serverPort = defaultServerPort;
 		Model.getModel().setSecret(defaultSecret);
 		
-		// TODO: Parse command line arguments
+		try {
+			for (int i = 0; i < args.length; i++) {
+				if (args[i].equals("-port")) {
+					i++;
+					serverPort = Integer.parseInt(args[i]);
+				} else if (args[i].equals("-secret")) {
+					i++;
+					String newSecret = args[i];
+					Model.getModel().setSecret(newSecret);
+				} else {
+					// TODO: Create specific exception
+					throw new Exception("No such argument");
+				}
+			}	
+		} catch (Exception e) {
+			System.err.println("Usage: java Main.class [-port <port>] [-secret <secret>]");
+			System.exit(1);
+		}
+		
 		try {
 			DatagramSocket serverSocket = new DatagramSocket(serverPort);
 			
@@ -65,6 +83,8 @@ public class Main {
 					
 				} catch (SilentlyIgnoreException e) {
 					System.out.println("Ignoring package: "+e.getMessage());
+				} catch (NotImplemented e) {
+					System.out.println("Not implemented: "+e.getMessage());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
